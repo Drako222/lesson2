@@ -1,145 +1,35 @@
-# Next.js GraphQL Server
+# Consume local Apollo GraphQL schema to create Static Generation export
 
-Next.js ships with two forms of pre-rendering: [Static Generation](https://nextjs.org/docs/basic-features/pages#static-generation-recommended) and [Server-side Rendering](https://nextjs.org/docs/basic-features/pages#server-side-rendering). This example shows how to perform Static Generation using a local [Apollo GraphQL](https://www.apollographql.com/docs/apollo-server/) schema within [getStaticProps](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation) and [getStaticPaths](https://nextjs.org/docs/basic-features/data-fetching#getstaticpaths-static-generation). The end result is a Next.js application that uses one Apollo GraphQL schema to generate static pages at build time and also serve a GraphQL [API Route](https://nextjs.org/docs/api-routes/introduction) at runtime.
+Next.js ships with two forms of pre-rendering: [Static Generation](https://nextjs.org/docs/basic-features/pages#static-generation-recommended) and [Server-side Rendering](https://nextjs.org/docs/basic-features/pages#server-side-rendering). This example shows how to perform Static Generation using a local [Apollo GraphQL](https://www.apollographql.com/docs/apollo-server/) schema within [getStaticProps](https://nextjs.org/docs/basic-features/data-fetching/get-static-props) and [getStaticPaths](https://nextjs.org/docs/basic-features/data-fetching/get-static-paths.md). The end result is a Next.js application that uses one Apollo GraphQL schema to generate static pages at build time and also serve a GraphQL [API Route](https://nextjs.org/docs/api-routes/introduction) at runtime.
 
-## Setup
+## Deploy your own
 
-First, create a repository on GitHub, clone it and `cd` into the directory:
+Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/api-routes-apollo-server)
 
-```sh
-git clone <repo url>
-cd <repo name>
-```
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/api-routes-apollo-server&project-name=api-routes-apollo-server&repository-name=api-routes-apollo-server)
 
-Then run:
+## How to use
 
-```sh
-yarn create next-app --example api-routes-apollo-server .
-```
-
-## Development
-
-```sh
-yarn dev
-```
-
-### Explore the GraphQL API with GraphiQL
-
-- check out http://localhost:3000/api/graphql
-
-### Static Result
-
-- Return a list of all todos (static)
-- Return one single todo
-- Filter list of todos by `checked`
-
-```graphql
-{
-  todos(filterChecked: false) {
-    id
-    title
-  }
-}
-```
-
-```graphql
-{
-  todo(id: "2") {
-    id
-    title
-    checked
-  }
-}
-```
-
-### Add SQL
-
-Make sure that your PostgreSQL is running. You can start it with:
-
-```sh
-postgres
-```
-
-Open a new tab in your terminal. In this new tab, connect to the database:
-
-```sh
-psql postgres
-```
-
-Once you are connected, run the following queries:
-
-```sql
-CREATE DATABASE todos_next;
-CREATE USER todos_next WITH ENCRYPTED PASSWORD 'todos_next';
-GRANT ALL PRIVILEGES ON DATABASE todos_next TO todos_next;
-```
-
-Once you have succesfully run these queries, quit `psql` with:
+Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
 
 ```bash
-\q
+npx create-next-app --example api-routes-apollo-server api-routes-apollo-server-app
 ```
 
-Add dependencies:
-
-```sh
-yarn add dotenv dotenv-cli postgres ley
+```bash
+yarn create next-app --example api-routes-apollo-server api-routes-apollo-server-app
 ```
 
-Add the file .env in the project root
-
-```sh
-PGHOST=localhost
-PGDATABASE=todos_next
-PGUSERNAME=todos_next
-PGPASSWORD=todos_next
+```bash
+pnpm create next-app --example api-routes-apollo-server api-routes-apollo-server-app
 ```
 
-Switch back to your editor and create a folder called `migrations`. In the `migrations` folder:
+Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
 
-1. Create the file `00000-create-todos-table.js` and copy and paste the content from https://github.com/upleveled/react-graphql-frontend-backend-lessons/blob/main/lesson-next-graphql-server/todos3/migrations/00000-create-todos-table.js
-2. Create the file `00001-insert-todos.js` and copy and paste the content from https://github.com/upleveled/react-graphql-frontend-backend-lessons/blob/main/lesson-next-graphql-server/todos3/migrations/00001-insert-todos.js
+## Notes
 
-In a terminal, run the migrations:
+### Static Export
 
-```sh
-yarn dotenv ley up
-```
+If you wish to export a static HTML + JS version of the site you need to first change the setting in this example in `./pages/[username].js` where `getStaticPaths` has `fallback: true` - this needs to be `false` for static export to work. You can then run `npm run build` and `npm run export` to export the site as a static folder in `./out` directory.
 
-Connect to the database:
-
-```js
-require("dotenv").config();
-const postgres = require("postgres");
-const sql = postgres();
-```
-
-- Return a list of all todos
-- Return one single todo
-- Filter list of todos by `checked`
-
-### Mutation
-
-- Create a todo
-
-```graphql
-# Write your query or mutation here
-mutation {
-  createTodo(title: "Call my Brother") {
-    id
-    title
-    checked
-  }
-}
-```
-
-### Nesting
-
-What? 🤯
-
-- create manipulated property based on an existing one e.g. slug
-
-## Home work: Add Apollo Client
-
-- will only work on clientside
-- for server side just copy: https://github.com/zeit/next.js/tree/master/examples/api-routes-apollo-server-and-client
+[Read more about fallback option](https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required)
