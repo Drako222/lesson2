@@ -1,19 +1,19 @@
-import queryGraphql from '../shared/query-graphql'
+import queryGraphql from '../../shared/query-graphql';
 
 export default function UserProfile({ user }) {
   if (!user) {
-    return <h1>User Not Found</h1>
+    return <h1>User Not Found</h1>;
   }
   return (
     <h1>
       {user.username} is {user.name}
     </h1>
-  )
+  );
 }
 
 export async function getStaticProps(context) {
-  const { params } = context
-  const { username } = params
+  const { params } = context;
+  const { username } = params;
   const { user = null } = await queryGraphql(
     `
     query($username: String) {
@@ -23,9 +23,9 @@ export async function getStaticProps(context) {
       }
     }
   `,
-    { username }
-  )
-  return { props: { user } }
+    { username },
+  );
+  return { props: { user } };
 }
 
 export async function getStaticPaths() {
@@ -35,11 +35,11 @@ export async function getStaticPaths() {
         username
       }
     }
-  `)
+  `);
   return {
     paths: users.map(({ username }) => ({
       params: { username },
     })),
     fallback: true,
-  }
+  };
 }
